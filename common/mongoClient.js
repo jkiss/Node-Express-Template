@@ -10,7 +10,11 @@
 const config   = require('../config')
 const log      = require('./logger').getLogger('infoLog')
 const mongoose = require('mongoose')
-const conn     = mongoose.createConnection(config.db_myapp, {useNewUrlParser: true, useCreateIndex: true})
+const conn     = mongoose.createConnection(config.db_myapp, {
+    useNewUrlParser: true, 
+    useCreateIndex: true,
+    useUnifiedTopology: true
+})
 
 // test conn events
 conn.on('error', (err)=>{
