@@ -47,6 +47,11 @@ sudo redis-server /etc/redis.conf
 wget https://url/test.rpm
 sudo rpm -ivh test.rpm
 
+# CentOS7升级Git（解决pm2 deploy can't fetch latest master code）
+yum remove git
+yum install -y https://centos7.iuscommunity.org/ius-release.rpm
+yum install -y git2u
+
 ```
 
 ### 使用yum安装nodejs
