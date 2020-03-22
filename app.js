@@ -13,13 +13,11 @@ const express = require('express')
 const app     = express()
 const path    = require('path')
 const fs      = require('fs')
-const log4js  = require('log4js')
 const config  = require('./config')
 
 // Middlewares
 const favicon       = require('serve-favicon')
-// const morgan     = require('morgan') // HTTP Request logger
-const log           = require('./common/logger').getLogger('infoLog')
+const morgan        = require('morgan') // HTTP Request logger
 const session       = require('express-session')
 const RedisStore    = require('connect-redis')(session)
 const redis_client  = require('./common/redisClient')
@@ -45,11 +43,7 @@ app.set('view engine', 'ejs')
 // Use Middlewares
 app.use(favicon(path.join(__dirname, 'favicon.ico')))
 app.use(express.static(config.public_path))
-// app.use(morgan(':remote-addr :referrer :date[iso] :method :url :status :response-time ms - :res[content-length]'))
-app.use(log4js.connectLogger(log, {
-    level: 'auto',
-    format: (req, res, format) => format(`:remote-addr ":method :url HTTP/:http-version" :status :response-time ms ":referrer" ":user-agent"`)
-}))
+app.use(morgan(':remote-addr :referrer :date[iso] :method :url :status :response-time ms - :res[content-length]'))
 app.use(compression())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -115,7 +109,7 @@ app.use((req, res, next) => {
  * Error Handle
  */
 app.use((err, req, res, next) => {
-    log.error('HTTP', err.message)
+    console.error('HTTP', err.message)
 
     res.status(err.status || 500)
     res.render('error', {
@@ -130,9 +124,9 @@ app.use((err, req, res, next) => {
 // HTTP Server
 const server_http = http.createServer(app)
 server_http.listen(app.get('port'), () => {
-    log.info('App Env: ' + app.get('env') + app.get('port'))
-    log.info(corsOptions)
-    log.info('Express HTTP server listening on port ' + app.get('port'))
+    console.info('App Env: ' + app.get('env') + app.get('port'))
+    console.info(corsOptions)
+    console.info('Express HTTP server listening on port ' + app.get('port'))
 })
 
 // HTTPS Server
@@ -142,7 +136,7 @@ server_http.listen(app.get('port'), () => {
 // }
 // const server_https = https.createServer(options, app);
 // server_https.listen(443, () => {
-//     log.info('Express HTTPS server listening on port 443');
+//     console.info('Express HTTPS server listening on port 443');
 // })
 
 // module.exports = app

@@ -8,7 +8,6 @@
 'use strict';
 
 const config   = require('../config')
-const log      = require('./logger').getLogger('infoLog')
 const mongoose = require('mongoose')
 const conn     = mongoose.createConnection(config.db_myapp, {
     useNewUrlParser: true, 
@@ -18,11 +17,11 @@ const conn     = mongoose.createConnection(config.db_myapp, {
 
 // test conn events
 conn.on('error', (err)=>{
-    log.error('Connection error: ' + err)
+    console.error('Connection error: ' + err)
 })
 
 conn.once('connected', ()=>{
-    log.info('MongoDB test connection successfully!')
+    console.info('MongoDB test connection successfully!')
 })
 
 exports = module.exports = conn

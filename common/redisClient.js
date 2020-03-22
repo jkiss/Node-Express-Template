@@ -9,7 +9,6 @@
 
 const redis       = require('redis')
 const config      = require('../config')
-const log         = require('./logger.js').getLogger('infoLog')
 const redisClient = redis.createClient({
         host: config.redis_host,
         port: config.redis_port
@@ -19,14 +18,12 @@ const redisClient = redis.createClient({
 
 redisClient.on('error', (err) => {
     if (err) {
-        log.error('Connect to redis error: ' + err)
-        
-        process.exit(1)
+        console.error('Connect to redis error: ' + err)
     }
 })
 
 redisClient.on('ready', () => {
-    log.info('Redis is ready!')
+    console.info('Redis is ready!')
 })
 
 exports = module.exports = redisClient
