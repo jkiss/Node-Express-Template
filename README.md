@@ -42,6 +42,8 @@ yum --enablerepo=remi install redis
 sudo rpm -ql redis
 # 启动 Redis
 sudo redis-server /etc/redis.conf
+# 关闭 Redis
+redis-cli shutdown
 
 # 手动安装rpm
 wget https://url/test.rpm
