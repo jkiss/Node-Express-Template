@@ -1,0 +1,29 @@
+# official ignore
+node_modules/
+.*.swp
+._*
+.DS_Store
+.git
+.hg
+.npmrc
+.lock-wscript
+.svn
+.wafpickle-*
+config.gypi
+CVS
+npm-debug.log
+
+#忽略Redis备份快照
+*.rdb
+
+#忽略 .vscode
+.vscode/
+
+#忽略public文件夹，公共文件用filezilla上传
+public/
+logs/
+
+build/
+.idea/
+npm-debug.log.*
+package-lock.json
