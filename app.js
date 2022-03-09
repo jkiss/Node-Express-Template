@@ -2,7 +2,7 @@
  * @Author: Nokey 
  * @Date: 2017-12-31 19:43:53 
  * @Last Modified by: Mr.B
- * @Last Modified time: 2019-07-15 15:51:12
+ * @Last Modified time: 2022-03-10 03:03:10
  */
 'use strict'; 
 
@@ -19,9 +19,6 @@ const config  = require('./config')
 // Middlewares
 const favicon       = require('serve-favicon')
 const morgan        = require('morgan') // HTTP Request logger
-const session       = require('express-session')
-const RedisStore    = require('connect-redis')(session)
-const redis_client  = require('./common/redisClient')
 const bodyParser    = require('body-parser')
 const compression   = require('compression')
 const cors          = require('cors')
@@ -49,22 +46,6 @@ app.use(compression())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(upload.none())
-app.use(session({
-    secret: 'Garfield cat',
-    name: 'G.SID',
-    resave: false,
-    saveUninitialized: true,
-    rolling: true,  // refresh session on every response
-    cookie: {
-        path: '/',
-        httpOnly: true,
-        maxAge: 3600000,
-        secure: false
-    },
-    store: new RedisStore({
-        client: redis_client
-    })
-}))
 
 /*****  Passport Config  *****/
 app.use(passport.initialize())
