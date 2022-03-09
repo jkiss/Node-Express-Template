@@ -1,0 +1,35 @@
+#!/usr/bin/env node
+
+'use strict';
+
+var request = require('request'),
+    fs = require('fs'),
+    path = require('path'),
+    moment = require('moment'),
+    models = require(path.resolve(__dirname, '../../models')),
+    LivePvEveryday = models.LivePvEveryday;
+
+request({
+    method: 'GET',
+    url: 'http://example.com/analytic/live-watched'
+}, (err, res, body) => {
+    if (!err && res.statusCode == 200) {
+        var data = JSON.parse(body),
+            time = (new Date).getTime();
+
+        LivePvEveryday.create({
+            pvtime: time,
+            pv: data.watched
+        }).then((doc) => {
+            // Insert Successfully
+            console.log('Record Live PV at', moment().format('HH:mm'), 'Successfully!');
+            process.exit();
+        }).catch((err) => {
+            console.log('errMsg:', err);
+            process.exit();
+        });
+    } else {
+        console.log('errMsg:', err, 'statusCode:', res.statusCode);
+        process.exit();
+    }
+});
