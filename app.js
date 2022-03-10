@@ -2,21 +2,26 @@
  * @Author: Nokey 
  * @Date: 2017-12-31 19:43:53 
  * @Last Modified by: Mr.B
- * @Last Modified time: 2022-03-10 03:03:10
+ * @Last Modified time: 2022-03-10 23:35:40
  */
 'use strict'; 
 
-// Core
+// core
 require('colors')
 const http    = require('http')
 const https   = require('https')
-const express = require('express')
-const app     = express()
 const path    = require('path')
 const fs      = require('fs')
-const config  = require('./config')
 
-// Middlewares
+// env & config
+const dotenv = require('dotenv')
+dotenv.config({path: path.resolve(process.env.HOME, 'harbour/.env')})
+const config  = require('./config')
+const IS_PROD = process.env.NODE_ENV === 'production'
+
+// express & middlewares
+const express       = require('express')
+const app           = express()
 const favicon       = require('serve-favicon')
 const morgan        = require('morgan') // HTTP Request logger
 const bodyParser    = require('body-parser')
@@ -33,8 +38,8 @@ const upload        = multer({
 })
 
 // Environments
-app.set('port', process.env.NODE_ENV === 'production' ? 80 : 3000)
-app.set('env', process.env.NODE_ENV === 'production' ? 'production' : 'development')
+app.set('port', IS_PROD ? 80 : 3000)
+app.set('env', IS_PROD ? 'production' : 'development')
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
@@ -59,13 +64,13 @@ passport.deserializeUser(Users.deserializeUser())
 
 // CORS config
 let corsOptions = null
-if ('development' !== app.get('env')) {
+if (IS_PROD) {
     corsOptions = {
         origin: config.cors.white_list
     }
 } else {
     corsOptions = {
-        origin: [/127\.0\.0\.1:3000/, /localhost:3000/]
+        origin: '*'
     }
 }
 
@@ -73,7 +78,8 @@ if ('development' !== app.get('env')) {
  * Routes
  */
 let pages = require('./routes/pages'),
-    api = require('./routes/api')
+    api = require('./routes/api');
+const { info } = require('console');
 
 app.post('/api/*', cors(corsOptions), api)
 app.get('/*', pages)
@@ -99,7 +105,7 @@ app.use((err, req, res, next) => {
 
         // Development error handler Will print stacktrace
         // Production error handler No stacktraces leaked to user
-        error: app.get('env') === 'development' ? err : {}
+        error: IS_PROD ? {} : err
     })
 })
 
@@ -112,14 +118,16 @@ server_http.listen(app.get('port'), () => {
 })
 
 // HTTPS Server
-// const options = {
-//     key: fs.readFileSync(config.https.key),
-//     cert: fs.readFileSync(config.https.cert),
-//     ca: fs.readFileSync(config.https.ca)
-// }
-// const server_https = https.createServer(options, app);
-// server_https.listen(443, () => {
-//     console.info('Express HTTPS server listening on port 443');
-// })
+if(IS_PROD){
+    const options = {
+        key: fs.readFileSync(process.env.HTTPS_KEY),
+        cert: fs.readFileSync(process.env.HTTPS_CERT),
+        ca: fs.readFileSync(process.env.HTTPS_CA)
+    }
+    const server_https = https.createServer(options, app)
+    server_https.listen(443, () => {
+        console.info('Express HTTPS server listening on port 443')
+    })
+}
 
 // module.exports = app
