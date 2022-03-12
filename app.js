@@ -18,6 +18,7 @@ const dotenv = require('dotenv')
 dotenv.config({path: path.resolve(process.env.HOME, 'harbour/.env')})
 const config  = require('./config')
 const IS_PROD = process.env.NODE_ENV === 'production'
+console.log(process.env);
 
 // express & middlewares
 const express       = require('express')
