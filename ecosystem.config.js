@@ -2,14 +2,18 @@ module.exports = {
     apps : [{
         name: "Express",
         script: "app.js",
-        log_file: "./logs/pm2/combined.outerr.log",
-        error_file: "./logs/pm2/err.log",
-        out_file: "./logs/pm2/out.log",
+        // error_file: "./logs/pm2/err.log",
+        // out_file: "./logs/pm2/out.log",
         merge_logs: true,
         interpreter_args: "--harmony",
         watch: false,
         ignore_watch: ["node_modules", "public", "\.git", "logs", "uploads", "npm-debug\.log"],
-        instances: "1", // String type
+        /**
+         * 0/max to spread the app across all CPUs
+         * -1 to spread the app across all CPUs - 1
+         * number to spread the app across number CPUs
+         */
+        instances: -1,
         exec_mode: "cluster",
         log_date_format: "YYYY-MM-DD HH:mm Z",
         env: {
