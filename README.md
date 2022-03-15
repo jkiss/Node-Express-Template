@@ -66,7 +66,7 @@ yum install git
 
 ```
 
-### 配置
+### 配置 
 ```
 mongodb 默认配置就差不多：
     processManagement:
