@@ -73,9 +73,9 @@ mongodb 默认配置就差不多：
         fork: true
         
 redis 一般涉及到：
-daemonize yes
-maxmemory 100mb
-maxmemory-policy allkeys-lru
+    daemonize yes
+    maxmemory 100mb
+    maxmemory-policy allkeys-lru
 
 具体可参考config文件夹里的内容
 ```

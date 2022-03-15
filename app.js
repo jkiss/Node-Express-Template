@@ -113,9 +113,9 @@ app.use((err, req, res, next) => {
 // HTTP Server
 const server_http = http.createServer(app)
 server_http.listen(app.get('port'), () => {
-    console.info('App Env: ' + app.get('env') + app.get('port'))
+    console.info(`App Env: ${app.get('env')} ${app.get('port')}`)
     console.info(corsOptions)
-    console.info('Express HTTP server listening on port ' + app.get('port'))
+    console.info(`Express HTTP server listening on port: ${app.get('port')}`)
 })
 
 // HTTPS Server
