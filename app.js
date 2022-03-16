@@ -25,11 +25,12 @@ const express       = require('express')
 const app           = express()
 const favicon       = require('serve-favicon')
 const morgan        = require('morgan') // HTTP Request logger
-const bodyParser    = require('body-parser')
 const compression   = require('compression')
 const cors          = require('cors')
 const passport      = require('passport')
-const LocalStrategy = require('passport-local').Strategy
+// const LocalStrategy = require('passport-local').Strategy
+const JwtStrategy = require('passport-jwt').Strategy
+const ExtractJwt = require('passport-jwt').ExtractJwt
 const multer        = require('multer')
 const upload        = multer({
     dest: config.upload_path,
@@ -49,18 +50,39 @@ app.use(morgan(`${'||> :method :url :status :response-time ms <||'.magenta} :rem
 app.use(favicon(path.join(__dirname, 'favicon.ico')))
 app.use(express.static(config.public_path))
 app.use(compression())
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 app.use(upload.none())
 
 /*****  Passport Config  *****/
 app.use(passport.initialize())
-app.use(passport.session())
+// app.use(passport.session())
 
-const Users = require('./models/User')
-passport.use(new LocalStrategy(Users.authenticate()))
-passport.serializeUser(Users.serializeUser())
-passport.deserializeUser(Users.deserializeUser())
+const User = require('./models/User')
+// passport.use(new LocalStrategy(User.authenticate()))
+// passport.use(User.createStrategy())
+// passport.serializeUser(User.serializeUser())
+// passport.deserializeUser(User.deserializeUser())
+
+const jwt_opts = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.JWT_SECRET_OR_KEY,
+    issuer: process.env.JWT_ISSUER,
+    audience: process.env.JWT_AUDIENCE
+}
+passport.use(new JwtStrategy(jwt_opts, (jwt_payload, done)=>{
+    User.findOne({id: jwt_payload.sub}, (err, user)=>{
+        if (err) {
+            return done(err, false);
+        }
+        if (user) {
+            return done(null, user);
+        } else {
+            return done(null, false);
+            // or you could create a new account
+        }
+    });
+}));
 /*****  END: Config  *****/
 
 // CORS config
@@ -80,7 +102,6 @@ if (IS_PROD) {
  */
 let pages = require('./routes/pages'),
     api = require('./routes/api');
-const { info } = require('console');
 
 app.post('/api/*', cors(corsOptions), api)
 app.get('/*', pages)
