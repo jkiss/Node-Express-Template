@@ -2,13 +2,13 @@
 * @Author: Nokey
 * @Date:   2016-08-01 20:49:03
  * @Last Modified by: Mr.B
- * @Last Modified time: 2019-07-15 13:48:14
+ * @Last Modified time: 2022-03-18 00:55:32
 */
 'use strict';
 
-const conn     = require('../common/mongoClient.js')
-const mongoose = require('mongoose')
-const Schema   = mongoose.Schema
+const conn       = require('../common/mongoClient.js')
+const mongoose   = require('mongoose')
+const { Schema } = mongoose
 
 const ArticleListSchema = new Schema({
     'id'               : { type: Number },
@@ -31,4 +31,4 @@ ArticleListSchema.index({newstime: -1})
 // link the collection "articlelists" with schema
 conn.model('ArticleList', ArticleListSchema)
 
-exports = module.exports = conn.model('ArticleList')
+module.exports = conn.model('ArticleList')

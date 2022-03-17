@@ -2,26 +2,28 @@
  * @Author: Nokey 
  * @Date: 2019-07-12 15:47:31 
  * @Last Modified by: Mr.B
- * @Last Modified time: 2019-07-12 17:01:28
+ * @Last Modified time: 2022-03-18 00:55:26
  */
 'use strict'; 
 
-const conn     = require('../common/mongoClient')
-const mongoose = require('mongoose')
-const Schema   = mongoose.Schema
-const plm      = require('passport-local-mongoose')
+const conn       = require('../common/mongoClient')
+const mongoose   = require('mongoose')
+const { Schema } = mongoose
 
-let UserSchema = new Schema({
-    'nickname': { type: String, default: '' },
-    'phone'   : { type: String, default: '' },
-    'role'    : { type: String, default: '' },
-    'other'   : { type: String, default: '' }
+const UserSchema = new Schema({
+    'username': { type: String },
+    'password': { type: String },
+    'email'   : { type: String },
+    'nickname': { type: String },
+    'phone'   : { type: String },
+    'roles'   : [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Role'
+        }
+    ]
 })
-
-// Passport-Local Mongoose will add a username, hash and salt field 
-// to store the username, the hashed password and the salt value.
-UserSchema.plugin(plm)
 
 conn.model('User', UserSchema)
 
-exports = module.exports = conn.model('User')
+module.exports = conn.model('User')

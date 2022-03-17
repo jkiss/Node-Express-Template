@@ -2,16 +2,16 @@
  * @Author: Nokey 
  * @Date: 2017-12-31 19:43:53 
  * @Last Modified by: Mr.B
- * @Last Modified time: 2022-03-10 23:35:40
+ * @Last Modified time: 2022-03-18 01:31:29
  */
 'use strict'; 
 
 // core
 require('colors')
-const http    = require('http')
-const https   = require('https')
-const path    = require('path')
-const fs      = require('fs')
+const http  = require('http')
+const https = require('https')
+const path  = require('path')
+const fs    = require('fs')
 
 // env & config
 const dotenv = require('dotenv')
@@ -54,42 +54,21 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(upload.none())
 
-/*****  Passport Config  *****/
-app.use(passport.initialize())
-// app.use(passport.session())
-
-const User = require('./models/User')
-// passport.use(new LocalStrategy(User.authenticate()))
-// passport.use(User.createStrategy())
-// passport.serializeUser(User.serializeUser())
-// passport.deserializeUser(User.deserializeUser())
+/*****  JWT Config  *****/
 
 const jwt_opts = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.JWT_SECRET_OR_KEY,
     issuer: process.env.JWT_ISSUER,
     audience: process.env.JWT_AUDIENCE
 }
-passport.use(new JwtStrategy(jwt_opts, (jwt_payload, done)=>{
-    User.findOne({id: jwt_payload.sub}, (err, user)=>{
-        if (err) {
-            return done(err, false);
-        }
-        if (user) {
-            return done(null, user);
-        } else {
-            return done(null, false);
-            // or you could create a new account
-        }
-    });
-}));
+
 /*****  END: Config  *****/
 
 // CORS config
 let corsOptions = null
 if (IS_PROD) {
     corsOptions = {
-        origin: config.cors.white_list
+        origin: process.env.WHITE_LIST.split(',')
     }
 } else {
     corsOptions = {
