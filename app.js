@@ -2,7 +2,7 @@
  * @Author: Nokey 
  * @Date: 2017-12-31 19:43:53 
  * @Last Modified by: Mr.B
- * @Last Modified time: 2022-03-18 01:31:29
+ * @Last Modified time: 2022-03-18 02:27:19
  */
 'use strict'; 
 
@@ -27,10 +27,6 @@ const favicon       = require('serve-favicon')
 const morgan        = require('morgan') // HTTP Request logger
 const compression   = require('compression')
 const cors          = require('cors')
-const passport      = require('passport')
-// const LocalStrategy = require('passport-local').Strategy
-const JwtStrategy = require('passport-jwt').Strategy
-const ExtractJwt = require('passport-jwt').ExtractJwt
 const multer        = require('multer')
 const upload        = multer({
     dest: config.upload_path,
