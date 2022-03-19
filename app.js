@@ -78,8 +78,10 @@ if (IS_PROD) {
  */
 const pages = require('./routes/pages')
 const api = require('./routes/api')
+const admin = require('./routes/admin')
 
 app.post('/api/*', cors(corsOptions), api)
+app.post('/admin/*', cors(corsOptions), admin)
 app.get('/*', pages)
 
 /**

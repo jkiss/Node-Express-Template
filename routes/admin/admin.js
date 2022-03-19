@@ -12,11 +12,3 @@ const router  = express.Router()
 exports.admin = (req, res, next)=>{
     res.status(200).render('admin', { title: 'admin' })
 }
-
-// exports.article_list = (req, res, next)=>{
-//     res.status(200).render('article_list', { title: 'article_list' })
-// }
-
-// exports.article_edit = (req, res, next)=>{
-//     res.status(200).render('article_edit', { title: 'article_edit' })
-// }
