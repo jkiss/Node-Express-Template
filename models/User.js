@@ -14,14 +14,12 @@ const UserSchema = new Schema({
     'username': { type: String },
     'password': { type: String },
     'email'   : { type: String },
-    'nickname': { type: String },
     'phone'   : { type: String },
-    'roles'   : [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Role'
-        }
-    ]
+    'other'   : { type: String },
+    'roles'   : [{
+        type: Schema.Types.ObjectId,
+        ref: 'Role'
+    }]
 })
 
 conn.model('User', UserSchema)

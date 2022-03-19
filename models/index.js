@@ -9,7 +9,7 @@
 /**
  * other models
  */
-exports.ArticleList = require('./ArticleList')
+exports.Articles = require('./Articles')
 
 /**
  * user's models

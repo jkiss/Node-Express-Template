@@ -7,9 +7,9 @@
 
 'use strict';
 
-const config   = require('../config')
+// const config   = require('../config')
 const mongoose = require('mongoose')
-const conn     = mongoose.createConnection(config.db_myapp)
+const conn     = mongoose.createConnection(process.env.MONGODB_URI)
 
 // test conn events
 conn.on('error', (err)=>{

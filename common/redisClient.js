@@ -8,11 +8,11 @@
 'use strict';
 
 const redis       = require('redis')
-const config      = require('../config')
+// const config      = require('../config')
 const redisClient = redis.createClient({
         socket: {
-            host: config.redis_host,
-            port: config.redis_port
+            host: process.env.REDIS_HOST,
+            port: process.env.REDIS_PORT
         }
         // database: config.redis_db
         // password: config.redis_password

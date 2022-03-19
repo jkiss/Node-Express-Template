@@ -21,14 +21,14 @@ const IS_PROD = process.env.NODE_ENV === 'production'
 console.log(process.env);
 
 // express & middlewares
-const express       = require('express')
-const app           = express()
-const favicon       = require('serve-favicon')
-const morgan        = require('morgan') // HTTP Request logger
-const compression   = require('compression')
-const cors          = require('cors')
-const multer        = require('multer')
-const upload        = multer({
+const express     = require('express')
+const app         = express()
+const favicon     = require('serve-favicon')
+const morgan      = require('morgan') // HTTP Request logger
+const compression = require('compression')
+const cors        = require('cors')
+const multer      = require('multer')
+const upload      = multer({
     dest: config.upload_path,
     limits: {
         files: 5
@@ -37,6 +37,7 @@ const upload        = multer({
 
 // Environments
 app.set('port', IS_PROD ? 80 : 3000)
+app.set('https_port', IS_PROD ? 443 : 4433)
 app.set('env', IS_PROD ? 'production' : 'development')
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
@@ -75,8 +76,8 @@ if (IS_PROD) {
 /**
  * Routes
  */
-let pages = require('./routes/pages'),
-    api = require('./routes/api');
+const pages = require('./routes/pages')
+const api = require('./routes/api')
 
 app.post('/api/*', cors(corsOptions), api)
 app.get('/*', pages)
@@ -115,16 +116,14 @@ server_http.listen(app.get('port'), () => {
 })
 
 // HTTPS Server
-if(IS_PROD){
-    const options = {
-        key: fs.readFileSync(process.env.HTTPS_KEY),
-        cert: fs.readFileSync(process.env.HTTPS_CERT),
-        ca: fs.readFileSync(process.env.HTTPS_CA)
-    }
-    const server_https = https.createServer(options, app)
-    server_https.listen(443, () => {
-        console.info('Express HTTPS server listening on port 443')
-    })
+const options = {
+    key: fs.readFileSync(process.env.HTTPS_KEY),
+    cert: fs.readFileSync(process.env.HTTPS_CERT)
+    // ca: fs.readFileSync(process.env.HTTPS_CA)
 }
+const server_https = https.createServer(options, app)
+server_https.listen(app.get('https_port'), () => {
+    console.info(`Express HTTPS server listening on port: ${app.get('https_port')}`)
+})
 
 // module.exports = app

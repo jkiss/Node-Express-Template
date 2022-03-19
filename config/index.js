@@ -40,9 +40,9 @@ let config = {
     logErrorFile: logErrorPath + '/err.log',
     logInfoFile: logInfoPath + '/info.log',
 
-    cors: {
-        white_list: [/\.domain1\.com$/, /\.domain2\.me$/]
-    },
+    // cors: {
+    //     white_list: [/\.domain1\.com$/, /\.domain2\.me$/]
+    // },
     
     // https: {
     //     cert: '/etc/letsencrypt/live/url/cert.pem',

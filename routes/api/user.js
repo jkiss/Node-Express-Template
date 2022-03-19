@@ -14,6 +14,7 @@ exports.register = (req, res, next) => {
     const user = new User({
         username: req.body.username,
         email: req.body.email,
+        phone: req.body.phone,
         password: bcrypt.hashSync(req.body.password, 8)
     })
 
@@ -63,7 +64,7 @@ exports.register = (req, res, next) => {
 
 exports.login = (req, res, next) => {
     User.findOne({
-        username: req.body.username
+        email: req.body.email
     })
     .populate("roles", "-__v")
     .exec((err, user) => {
@@ -74,18 +75,22 @@ exports.login = (req, res, next) => {
         if (!user) {
             return res.status(404).send({ message: "User Not found." });
         }
+
+        // verify password
         const passwordIsValid = bcrypt.compareSync(
             req.body.password,
             user.password
-        );
+        )
         if (!passwordIsValid) {
             return res.status(401).send({
                 accessToken: null,
                 message: "Invalid Password!"
-            });
+            })
         }
-        const token = jwt.sign({ id: user.id }, config.secret, {
-            expiresIn: 86400 // 24 hours
+
+        // gen token
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_OR_KEY, {
+            expiresIn: 60 * 60 * 24 * 5 // 5 days
         });
         const authorities = [];
         for (let i = 0; i < user.roles.length; i++) {
@@ -96,16 +101,14 @@ exports.login = (req, res, next) => {
             username: user.username,
             email: user.email,
             roles: authorities,
-            accessToken: token
+            token: token
         });
     });
 }
 
 exports.logout = (req, res, next) => {
-    req.logout()
-
     res.json({
         stat: 200,
-        msg: 'Logout successfully!'
+        msg: 'Maybe you need delete token by yourself :)'
     })
 }
