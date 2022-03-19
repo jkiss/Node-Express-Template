@@ -107,7 +107,9 @@ app.use((err, req, res, next) => {
     })
 })
 
-// HTTP Server
+/**
+ * HTTP Server
+ */
 const server_http = http.createServer(app)
 server_http.listen(app.get('port'), () => {
     console.info(`App Env: ${app.get('env')} ${app.get('port')}`)
@@ -115,7 +117,9 @@ server_http.listen(app.get('port'), () => {
     console.info(`Express HTTP server listening on port: ${app.get('port')}`)
 })
 
-// HTTPS Server
+/**
+ * HTTPS Server
+ */
 const options = {
     key: fs.readFileSync(process.env.HTTPS_KEY),
     cert: fs.readFileSync(process.env.HTTPS_CERT)

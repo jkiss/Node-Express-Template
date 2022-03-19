@@ -8,9 +8,18 @@
 
 const express = require('express')
 const router  = express.Router()
+const { verifyToken, isAdmin } = require('../../middlewares/authJwt')
 
 /* GET home page. */
-const home = require('./home')
-router.get(/^\/(home)?/, home.home)
+const { home } = require('./home')
+router.get(/^\/(home)?/, home)
+
+/* GET admin page. */
+const { admin } = require('./admin')
+router.get('/admin/login', admin)
+
+router.get('/admin/*', [verifyToken, isAdmin])
+router.get('/admin/article-list', admin)
+router.get('/admin/article-edit', admin)
 
 module.exports = router
