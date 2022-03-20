@@ -11,7 +11,6 @@ const router           = express.Router()
 const request          = require('request')
 const redis            = require('../common/cache')
 const config           = require('../config')
-const log              = require('../common/logger').getLogger('errLog')
 const models           = require('../models')
 const ArticleListModel = models.ArticleList
 

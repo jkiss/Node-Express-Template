@@ -6,60 +6,94 @@
  */
 'use strict';
 
-const log = require('../../common/logger').getLogger('errLog')
 const { User, Role } = require('../../models/User')
 const bcrypt = require('bcryptjs')
 
-exports.register = (req, res, next) => {
-    const user = new User({
-        username: req.body.username,
-        email: req.body.email,
-        phone: req.body.phone,
-        password: bcrypt.hashSync(req.body.password, 8)
-    })
+exports.register = async (req, res, next) => {
+    try {
+        const user = new User({
+            username: req.body.username,
+            email: req.body.email,
+            phone: req.body.phone,
+            password: bcrypt.hashSync(req.body.password, 8)
+        })
+    
+        const new_user = await user.save()
+        console.log('register a new user', new_user)
 
-    user.save((err, user) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return;
-        }
         if (req.body.roles) {
-            Role.find(
-                {
+            const roles = await Role.find({
                     name: { $in: req.body.roles }
-                },
-                (err, roles) => {
-                    if (err) {
-                        res.status(500).send({ message: err });
-                        return;
-                    }
-                    user.roles = roles.map(role => role._id);
-                    user.save(err => {
-                        if (err) {
-                            res.status(500).send({ message: err });
-                            return;
-                        }
-                        res.send({ message: "User was registered successfully!" });
-                    });
-                }
-            );
+                }).exec()
+
+            user.roles = roles.map(role => role._id)
+            await user.save()
+
+            res.send({ 
+                message: 'User was registered successfully!' 
+            })
         } else {
-            Role.findOne({ name: "user" }, (err, role) => {
-                if (err) {
-                    res.status(500).send({ message: err });
-                    return;
-                }
-                user.roles = [role._id];
-                user.save(err => {
-                    if (err) {
-                        res.status(500).send({ message: err });
-                        return;
-                    }
-                    res.send({ message: "User was registered successfully!" });
-                });
-            });
+            const role = await Role.findOne({ name: 'user' })
+
+            user.roles = [role._id]
+            await user.save()
+
+            res.send({ 
+                message: 'User was registered successfully!' 
+            })
         }
-    });
+    } catch (error) {
+        res.status(500).send({ message: error })
+    }
+    // const user = new User({
+    //     username: req.body.username,
+    //     email: req.body.email,
+    //     phone: req.body.phone,
+    //     password: bcrypt.hashSync(req.body.password, 8)
+    // })
+
+    // user.save((err, user) => {
+    //     if (err) {
+    //         res.status(500).send({ message: err });
+    //         return;
+    //     }
+    //     if (req.body.roles) {
+    //         Role.find(
+    //             {
+    //                 name: { $in: req.body.roles }
+    //             },
+    //             (err, roles) => {
+    //                 if (err) {
+    //                     res.status(500).send({ message: err });
+    //                     return;
+    //                 }
+    //                 user.roles = roles.map(role => role._id);
+    //                 user.save(err => {
+    //                     if (err) {
+    //                         res.status(500).send({ message: err });
+    //                         return;
+    //                     }
+    //                     res.send({ message: "User was registered successfully!" });
+    //                 });
+    //             }
+    //         );
+    //     } else {
+    //         Role.findOne({ name: "user" }, (err, role) => {
+    //             if (err) {
+    //                 res.status(500).send({ message: err });
+    //                 return;
+    //             }
+    //             user.roles = [role._id];
+    //             user.save(err => {
+    //                 if (err) {
+    //                     res.status(500).send({ message: err });
+    //                     return;
+    //                 }
+    //                 res.send({ message: "User was registered successfully!" });
+    //             });
+    //         });
+    //     }
+    // });
 }
 
 exports.login = (req, res, next) => {
