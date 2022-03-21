@@ -3,9 +3,11 @@
   "version": "1.1.1",
   "private": true,
   "scripts": {
-    "start": "node app.js",
+    "dev": "node app.js",
     "test": "mocha -G --reporter mochawesome --reporter-options reportDir=./test/reports",
     "redis": "redis-server --daemonize yes",
+    "mac-start-db": "brew services start mongodb-community@5.0",
+    "mac-stop-db": "brew services stop mongodb-community@5.0",
     "pm2_dev": "pm2 startOrRestart ecosystem.config.js --env development",
     "pm2_prod": "pm2 startOrRestart ecosystem.config.js --env production",
     "pm2_stop": "pm2 delete ecosystem.config.js",

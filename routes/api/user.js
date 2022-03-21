@@ -6,7 +6,7 @@
  */
 'use strict';
 
-const { User, Role } = require('../../models/User')
+const { User, Role } = require('../../models')
 const bcrypt = require('bcryptjs')
 
 exports.register = async (req, res, next) => {
@@ -43,7 +43,10 @@ exports.register = async (req, res, next) => {
             })
         }
     } catch (error) {
-        res.status(500).send({ message: error })
+        // res.status(500).send({ 
+        //     message: error
+        // })
+        next(error)
     }
     // const user = new User({
     //     username: req.body.username,

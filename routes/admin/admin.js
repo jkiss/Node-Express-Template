@@ -10,5 +10,5 @@ const express = require('express')
 const router  = express.Router()
 
 exports.admin = (req, res, next)=>{
-    res.status(200).render('admin', { title: 'admin' })
+    res.status(200).render('home', { title: 'Admin' })
 }

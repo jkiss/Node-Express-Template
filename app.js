@@ -81,7 +81,7 @@ const api = require('./routes/api')
 const admin = require('./routes/admin')
 
 app.post('/api/*', cors(corsOptions), api)
-app.post('/admin/*', cors(corsOptions), admin)
+app.get('/admin/*', cors(corsOptions), admin)
 app.get('/*', pages)
 
 /**
@@ -97,16 +97,22 @@ app.use((req, res, next) => {
  * Error Handle
  */
 app.use((err, req, res, next) => {
-    console.error('HTTP', err.message)
-
+    console.error('error', err)
+    
     res.status(err.status || 500)
-    res.render('error', {
-        message: err.message,
-
-        // Development error handler Will print stacktrace
-        // Production error handler No stacktraces leaked to user
-        error: IS_PROD ? {} : err
-    })
+    if(IS_PROD){
+        res.send({ 
+            message: error
+        })
+    }else{
+        res.render('error', {
+            message: err.message,
+    
+            // Development error handler Will print stacktrace
+            // Production error handler No stacktraces leaked to user
+            error: err.stack
+        })
+    }
 })
 
 /**

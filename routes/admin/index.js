@@ -11,7 +11,7 @@ const router  = express.Router()
 const { verifyToken, isAdmin } = require('../../middlewares/authJwt')
 
 /* GET admin page. */
-const { admin } = require('../admin/admin')
+const { admin } = require('./admin')
 router.get('/admin/login', admin)
 router.get('/admin/*', [verifyToken, isAdmin], admin) // verify token before access admin pages
 // router.get('/admin/article-list', admin)

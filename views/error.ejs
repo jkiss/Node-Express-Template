@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= message %></title>
-  </head>
-  <body>
-    <h1><%= message %></h1>
-    <p><%= error %></p>
-  </body>
+
+    <head>
+        <title>Error Page</title>
+    </head>
+
+    <body>
+        <h1><%= message %></h1>
+        <ul style="padding-left: 4em;">
+            <% error.split('at ').forEach((user)=>{ %>
+            <li>at <%= user %></li>
+            <% }); %>
+        </ul>
+    </body>
+
 </html>
