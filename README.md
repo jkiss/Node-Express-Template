@@ -64,6 +64,14 @@ or
 yum -y install https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.9-1.x86_64.rpm
 yum install git
 
+# 阿里云 CentOS 8: Failed to download metadata for repo 'appstream'
+dnf --disablerepo '*' --enablerepo=extras swap centos-linux-repos centos-stream-repos
+# 删除原来的repo文件
+dnf distro-sync
+
+# pm2 需要安装这个日志插件
+pm2 install pm2-logrotate
+
 ```
 
 ### 配置 
