@@ -2,7 +2,7 @@
  * @Author: Nokey 
  * @Date: 2017-12-31 19:43:53 
  * @Last Modified by: Mr.B
- * @Last Modified time: 2022-03-18 02:27:19
+ * @Last Modified time: 2022-03-23 02:12:06
  */
 'use strict'; 
 
@@ -78,10 +78,10 @@ if (IS_PROD) {
  */
 const pages = require('./routes/pages')
 const api = require('./routes/api')
-const admin = require('./routes/admin')
+const cms = require('./routes/cms')
 
 app.post('/api/*', cors(corsOptions), api)
-app.get('/admin/*', cors(corsOptions), admin)
+app.get('/cms/*', cors(corsOptions), cms)
 app.get('/*', pages)
 
 /**

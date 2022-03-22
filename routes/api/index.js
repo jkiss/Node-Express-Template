@@ -2,7 +2,7 @@
  * @Author: Nokey 
  * @Date: 2019-07-13 20:22:12 
  * @Last Modified by: Mr.B
- * @Last Modified time: 2022-03-18 02:25:38
+ * @Last Modified time: 2022-03-23 02:13:35
  */
 'use strict';
 
@@ -27,7 +27,7 @@ router.post('/api/register', [
 router.post('/api/login', login)
 router.post('/api/logout', logout)
 
-/*****  admin  *****/
+/*****  CMS  *****/
 const { 
     createArticle,
     storeArticle,
@@ -35,11 +35,11 @@ const {
     deleteArticle,
     getArticles,
 } = require('./article')
-router.post('/api/admin/*', [verifyToken, isAdmin])
-router.post('/api/admin/create-article', createArticle)
-router.post('/api/admin/store-article', storeArticle)
-router.post('/api/admin/publish-article', publishArticle)
-router.post('/api/admin/delete-article', deleteArticle)
-router.post('/api/admin/get-articles', getArticles)
+router.post('/api/cms/*', [verifyToken, isAdmin])
+router.post('/api/cms/create-article', createArticle)
+router.post('/api/cms/store-article', storeArticle)
+router.post('/api/cms/publish-article', publishArticle)
+router.post('/api/cms/delete-article', deleteArticle)
+router.post('/api/cms/get-articles', getArticles)
 
 module.exports = router
