@@ -42,4 +42,11 @@ router.post('/api/cms/publish-article', publishArticle)
 router.post('/api/cms/delete-article', deleteArticle)
 router.post('/api/cms/get-articles', getArticles)
 
+/**
+ * 微信登陆，签名算法
+ */
+const { web_auth, jssdk_auth } = require('./wx')
+router.post('/api/wx-web-auth/get-userinfo', web_auth)
+router.post('/api/wx-jssdk-auth', jssdk_auth)
+
 module.exports = router

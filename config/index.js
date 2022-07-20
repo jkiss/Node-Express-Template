@@ -49,6 +49,10 @@ let config = {
     //     key: '/etc/letsencrypt/live/url/privkey.pem',
     //     ca: '/etc/letsencrypt/live/url/chain.pem'
     // }
+
+    // Wechat
+    wx_appid: '',
+    wx_appsecret: '',
 }
 
 module.exports = config
