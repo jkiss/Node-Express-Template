@@ -5,18 +5,20 @@
  * @Last Modified time: 2022-03-18 00:55:54
  */
 
-'use strict';
+'use strict'
 
 // const config   = require('../config')
 const mongoose = require('mongoose')
-const conn     = mongoose.createConnection(process.env.MONGODB_URI)
+const conn = mongoose.createConnection(
+    process.env.MONGODB_URI || 'mongodb://localhost:27017/test'
+)
 
 // test conn events
-conn.on('error', (err)=>{
+conn.on('error', (err) => {
     console.error('Connection error: ' + err)
 })
 
-conn.once('connected', ()=>{
+conn.once('connected', () => {
     console.info('MongoDB test connection successfully!')
 })
 

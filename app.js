@@ -1,38 +1,38 @@
 /*
- * @Author: Nokey 
- * @Date: 2017-12-31 19:43:53 
+ * @Author: Nokey
+ * @Date: 2017-12-31 19:43:53
  * @Last Modified by: Mr.B
  * @Last Modified time: 2022-03-23 02:12:06
  */
-'use strict'; 
+'use strict'
 
 // core
 require('colors')
-const http  = require('http')
+const http = require('http')
 const https = require('https')
-const path  = require('path')
-const fs    = require('fs')
+const path = require('path')
+const fs = require('fs')
 
 // env & config
 const dotenv = require('dotenv')
-const new_env = dotenv.config({path: path.resolve(process.env.HOME, '.env')})
-const config  = require('./config')
+const new_env = dotenv.config({ path: path.resolve(process.env.HOME, '.env') })
+const config = require('./config')
 const IS_PROD = process.env.NODE_ENV === 'production'
 console.info(new_env.parsed)
 
 // express & middlewares
-const express     = require('express')
-const app         = express()
-const favicon     = require('serve-favicon')
-const morgan      = require('morgan') // HTTP Request logger
+const express = require('express')
+const app = express()
+const favicon = require('serve-favicon')
+const morgan = require('morgan') // HTTP Request logger
 const compression = require('compression')
-const cors        = require('cors')
-const multer      = require('multer')
-const upload      = multer({
+const cors = require('cors')
+const multer = require('multer')
+const upload = multer({
     dest: config.upload_path,
     limits: {
-        files: 5
-    }
+        files: 5,
+    },
 })
 
 // Environments
@@ -43,7 +43,13 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
 // Use Middlewares
-app.use(morgan(`${'||> :method :url :status :response-time ms <||'.magenta} :remote-addr :referrer`))
+app.use(
+    morgan(
+        `${
+            '||> :method :url :status :response-time ms <||'.magenta
+        } :remote-addr :referrer`
+    )
+)
 app.use(favicon(path.join(__dirname, 'favicon.ico')))
 app.use(express.static(config.public_path))
 app.use(compression())
@@ -56,7 +62,7 @@ app.use(upload.none())
 const jwt_opts = {
     secretOrKey: process.env.JWT_SECRET_OR_KEY,
     issuer: process.env.JWT_ISSUER,
-    audience: process.env.JWT_AUDIENCE
+    audience: process.env.JWT_AUDIENCE,
 }
 
 /*****  END: Config  *****/
@@ -65,11 +71,11 @@ const jwt_opts = {
 let corsOptions = null
 if (IS_PROD) {
     corsOptions = {
-        origin: process.env.WHITE_LIST.split(',')
+        origin: process.env.WHITE_LIST.split(','),
     }
 } else {
     corsOptions = {
-        origin: '*'
+        origin: '*',
     }
 }
 
@@ -98,19 +104,19 @@ app.use((req, res, next) => {
  */
 app.use((err, req, res, next) => {
     console.error('error', err)
-    
+
     res.status(err.status || 500)
-    if(IS_PROD){
-        res.send({ 
-            message: error
+    if (IS_PROD) {
+        res.send({
+            message: error,
         })
-    }else{
+    } else {
         res.render('error', {
             message: err.message,
-    
+
             // Development error handler Will print stacktrace
             // Production error handler No stacktraces leaked to user
-            error: err.stack
+            error: err.stack,
         })
     }
 })
@@ -128,14 +134,18 @@ server_http.listen(app.get('port'), () => {
 /**
  * HTTPS Server
  */
-const options = {
-    key: fs.readFileSync(process.env.HTTPS_KEY),
-    cert: fs.readFileSync(process.env.HTTPS_CERT)
-    // ca: fs.readFileSync(process.env.HTTPS_CA)
+if (process.env.HTTPS_KEY && process.env.HTTPS_CERT) {
+    const options = {
+        key: fs.readFileSync(process.env.HTTPS_KEY),
+        cert: fs.readFileSync(process.env.HTTPS_CERT),
+        // ca: fs.readFileSync(process.env.HTTPS_CA)
+    }
+    const server_https = https.createServer(options, app)
+    server_https.listen(app.get('https_port'), () => {
+        console.info(
+            `Express HTTPS server listening on port: ${app.get('https_port')}`
+        )
+    })
 }
-const server_https = https.createServer(options, app)
-server_https.listen(app.get('https_port'), () => {
-    console.info(`Express HTTPS server listening on port: ${app.get('https_port')}`)
-})
 
 // module.exports = app

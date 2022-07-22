@@ -4,17 +4,16 @@
  * Fetch wx ticket, store it in redis
  */
 
-var crypto = require('crypto')
-var request = require('request')
-var redis = require('./cache')
-var logger = require('./logger')
-var config = require('../config')
+const crypto = require('crypto')
+const request = require('request')
+const redis = require('./cache')
 
 // weixin jssdk
-var wx_appid = config.wx_appid
-var wx_appsecret = config.wx_appsecret
-var wx_token_key = 'wxToken'
-var wx_ticket_key = 'wxTicket'
+const wx_appid = process.env.WX_APPID
+const wx_appsecret = process.env.WX_APPSECRET
+const wx_token_key = 'wxToken'
+const wx_ticket_key = 'wxTicket'
+const expire_offset = 180
 
 function requestToken() {
     return new Promise((resolve, reject) => {
@@ -40,20 +39,20 @@ function requestToken() {
                         redis.set(
                             wx_token_key,
                             access_token,
-                            expires_in - config.expireOffset,
+                            expires_in - expire_offset,
                             (err, reply) => {
                                 if (err) {
-                                    logger.error('Cache wxToken error: ' + err)
+                                    console.error('Cache wxToken error: ' + err)
                                 } else {
-                                    logger.info('Cache wxToken success!')
+                                    console.info('Cache wxToken success!')
                                 }
                             }
                         )
 
-                        logger.info('Get Token from Internet...')
+                        console.info('Get Token from Internet...')
                         resolve(access_token)
                     } else {
-                        logger.error(
+                        console.error(
                             'Request sucess, but get token failed: ' +
                                 token_data['errmsg']
                         )
@@ -63,7 +62,7 @@ function requestToken() {
                         )
                     }
                 } else {
-                    logger.error('Token Request failed: ' + error)
+                    console.error('Token Request failed: ' + error)
                     reject('Token Request failed: ' + error)
                 }
             }
@@ -94,20 +93,22 @@ function requestTicket(access_token) {
                         redis.set(
                             wx_ticket_key,
                             ticket,
-                            expires_in - config.expireOffset,
+                            expires_in - expire_offset,
                             (err, reply) => {
                                 if (err) {
-                                    logger.error('Cache wxTicket error: ' + err)
+                                    console.error(
+                                        'Cache wxTicket error: ' + err
+                                    )
                                 } else {
-                                    logger.info('Cache wxTicket success!')
+                                    console.info('Cache wxTicket success!')
                                 }
                             }
                         )
 
-                        logger.info('Get Ticket from Internet: ' + ticket)
+                        console.info('Get Ticket from Internet: ' + ticket)
                         resolve(ticket)
                     } else {
-                        logger.error(
+                        console.error(
                             'Request sucess, but get ticket failed: ' +
                                 ticket_data['errmsg']
                         )
@@ -117,7 +118,7 @@ function requestTicket(access_token) {
                         )
                     }
                 } else {
-                    logger.error('Ticket Request failed: ' + error)
+                    console.error('Ticket Request failed: ' + error)
                     reject('Ticket Request failed: ' + error)
                 }
             }
@@ -130,10 +131,10 @@ function getToken() {
         redis.get(wx_token_key, (err, data) => {
             // TODO: redis get token
             if (data) {
-                logger.info('Get Token from Redis...')
+                console.info('Get Token from Redis...')
                 resolve(data)
             } else {
-                logger.info(typeof data)
+                console.info(typeof data)
                 resolve(requestToken())
             }
         })
@@ -144,7 +145,7 @@ function getTicket(token) {
     return new Promise((resolve, reject) => {
         redis.get(wx_ticket_key, (err, data) => {
             if (data) {
-                logger.info('Get Ticket from Redis: ' + data)
+                console.info('Get Ticket from Redis: ' + data)
                 resolve(data)
             } else {
                 resolve(requestTicket(token))
@@ -187,7 +188,7 @@ function wxJssdkAuth(url, cb) {
                     timestamp,
                     noncestr
                 )
-                logger.info('signature: ' + signature)
+                console.info('signature: ' + signature)
                 cb &&
                     cb(null, {
                         appId: wx_appid,
@@ -197,7 +198,7 @@ function wxJssdkAuth(url, cb) {
                     })
             })
             .catch((err) => {
-                logger.error('JSSDK Promise: ' + err)
+                console.error('JSSDK Promise: ' + err)
                 cb && cb(err)
             })
     }
@@ -227,7 +228,7 @@ function createSignString(obj) {
     keys.forEach((key, i) => {
         newArgs.push(key + '=' + obj[key])
     })
-    logger.info('string1: ' + newArgs.join('&'))
+    console.info('string1: ' + newArgs.join('&'))
     return newArgs.join('&')
 }
 

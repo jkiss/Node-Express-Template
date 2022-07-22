@@ -5,15 +5,15 @@
  * @Last Modified time: 2017-02-07 18:25:51
  */
 
-'use strict';
+'use strict'
 
 /**
  * Redis cache
  */
-const util  = require('util')
+const util = require('util')
 const redis = require('./redisClient')
 
-const rSetex = util.promisify(redis.setex).bind(redis)
+const rSetex = util.promisify(redis.setEx).bind(redis)
 const rSet = util.promisify(redis.set).bind(redis)
 const rGet = util.promisify(redis.get).bind(redis)
 
@@ -23,11 +23,11 @@ const rGet = util.promisify(redis.get).bind(redis)
  * @param {String} key
  * @param {String} value
  * @param {Number} expire
- * 
+ *
  * @returns Promise
  */
 function set(key, value, expire) {
-    if(typeof value === 'object'){
+    if (typeof value === 'object') {
         value = JSON.stringify(value)
     }
 

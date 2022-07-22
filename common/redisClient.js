@@ -5,18 +5,21 @@
  * @Last Modified time: 2022-03-10 02:34:19
  */
 
-'use strict';
+'use strict'
 
-const redis       = require('redis')
-// const config      = require('../config')
+const redis = require('redis')
+
+let opt = {}
+if (process.env.REDIS_PWD) {
+    opt = { ...opt, password: process.env.REDIS_PWD }
+}
 const redisClient = redis.createClient({
-        socket: {
-            host: process.env.REDIS_HOST,
-            port: process.env.REDIS_PORT
-        }
-        // database: config.redis_db
-        // password: config.redis_password
-    })
+    socket: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: process.env.REDIS_PORT || 6379,
+    },
+    ...opt,
+})
 
 redisClient.on('error', (err) => {
     if (err) {
