@@ -15,7 +15,7 @@ const fs    = require('fs')
 
 // env & config
 const dotenv = require('dotenv')
-const new_env = dotenv.config({path: path.resolve(process.env.HOME, 'harbour/.env')})
+const new_env = dotenv.config({path: path.resolve(process.env.HOME, '.env')})
 const config  = require('./config')
 const IS_PROD = process.env.NODE_ENV === 'production'
 console.info(new_env.parsed)
