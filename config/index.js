@@ -6,17 +6,13 @@
  */
 'use strict'; 
 
-let path         = require('path')
-let utils        = require('../utils')
-let logErrorPath = process.env.NODE_ENV === 'production' ? '/var/log/log4js/error': path.resolve(__dirname, '../logs/error')
-let logInfoPath  = process.env.NODE_ENV === 'production' ? '/var/log/log4js/info' : path.resolve(__dirname, '../logs/info')
-utils.exitDirify(logErrorPath)
-utils.exitDirify(logInfoPath)
+let path       = require('path')
+let utils      = require('../utils')
 
-let uploadPath   = process.env.NODE_ENV === 'production' ? '/var/uploads'         : path.resolve(__dirname, '../uploads')
+let uploadPath = process.env.NODE_ENV === 'production' ? process.env.UPLOADS : path.resolve(__dirname, '../uploads')
 utils.exitDirify(uploadPath)
 
-let publicPath   = process.env.NODE_ENV === 'production' ? '/home/public'         : path.resolve(__dirname, '../public')
+let publicPath = process.env.NODE_ENV === 'production' ? process.env.PUBLIC : path.resolve(__dirname, '../public')
 utils.exitDirify(publicPath)
 
 let config = {
@@ -37,8 +33,8 @@ let config = {
     // redis_password: '123qwe',
 
     // log4js
-    logErrorFile: logErrorPath + '/err.log',
-    logInfoFile: logInfoPath + '/info.log',
+    // logErrorFile: logErrorPath + '/err.log',
+    // logInfoFile: logInfoPath + '/info.log',
 
     // cors: {
     //     white_list: [/\.domain1\.com$/, /\.domain2\.me$/]
