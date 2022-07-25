@@ -1,7 +1,8 @@
-'use strict'
-
-/**
- * Fetch wx ticket, store it in redis
+/*
+ * @Author: Mr.B
+ * @Date: 2022-07-25 14:50:59
+ * @Last Modified by:   Mr.B
+ * @Last Modified time: 2022-07-25 14:50:59
  */
 
 const crypto = require('crypto')
