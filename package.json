@@ -11,7 +11,7 @@
         "pm2_dev": "pm2 startOrRestart ecosystem.config.js --env development",
         "pm2_prod": "pm2 startOrRestart ecosystem.config.js --env production",
         "pm2_stop": "pm2 delete ecosystem.config.js",
-        "pre_deploy": "pm2 deploy ecosystem.config.js production setup",
+        "deploy_setup_first": "pm2 deploy ecosystem.config.js production setup",
         "deploy": "pm2 deploy ecosystem.config.js production"
     },
     "dependencies": {
